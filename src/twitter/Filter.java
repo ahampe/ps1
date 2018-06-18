@@ -3,6 +3,9 @@
  */
 package twitter;
 
+import java.time.Instant;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -27,7 +30,17 @@ public class Filter {
      *         in the same order as in the input list.
      */
     public static List<Tweet> writtenBy(List<Tweet> tweets, String username) {
-        throw new RuntimeException("not implemented");
+        String userLower = username.toLowerCase();
+        List<Tweet> authors = new ArrayList<Tweet>();
+        
+        for (Tweet tweet : tweets) {
+            String author = tweet.getAuthor().toLowerCase();
+            if (author.equals(userLower)) {
+                authors.add(tweet);
+            }
+        }
+        
+        return authors;
     }
 
     /**
@@ -41,7 +54,18 @@ public class Filter {
      *         in the same order as in the input list.
      */
     public static List<Tweet> inTimespan(List<Tweet> tweets, Timespan timespan) {
-        throw new RuntimeException("not implemented");
+        Instant start = timespan.getStart();
+        Instant end = timespan.getEnd();
+        List<Tweet> inTweets = new ArrayList<Tweet>();
+        
+        for (Tweet tweet : tweets) {
+            Instant tTime = tweet.getTimestamp();
+            if (!start.isAfter(tTime) && !end.isBefore(tTime)) {
+                inTweets.add(tweet);
+            }
+        }
+        
+        return inTweets;
     }
 
     /**
@@ -60,7 +84,19 @@ public class Filter {
      *         same order as in the input list.
      */
     public static List<Tweet> containing(List<Tweet> tweets, List<String> words) {
-        throw new RuntimeException("not implemented");
+        List<Tweet> matched = new ArrayList<Tweet>();
+        
+        for (Tweet tweet : tweets) {
+            String[] tweetLowerWords = tweet.getText().toLowerCase().split("\\s+");
+            for (String word : words) {
+                if (Arrays.asList(tweetLowerWords).contains(word.toLowerCase())) {
+                    matched.add(tweet);
+                    break;
+                }
+            }
+        }
+        
+        return matched;
     }
 
 }

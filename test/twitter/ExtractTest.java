@@ -165,7 +165,7 @@ public class ExtractTest {
         Set<String> theseUsers = new HashSet<String>();
         theseUsers.add("shawty");
         
-        assertTrue("expected mentions", setEqualsIgnoreCase(mentionedUsers, theseUsers));
+        assertTrue("expected mentions: shawty", setEqualsIgnoreCase(mentionedUsers, theseUsers));
     }
     
     // Covers two distinct, one duplicate (case-insensitive)
@@ -177,7 +177,7 @@ public class ExtractTest {
         theseUsers.add("shawty");
         theseUsers.add("judge");
         
-        assertTrue("expected mentions", setEqualsIgnoreCase(mentionedUsers, theseUsers));
+        assertTrue("expected mentions: shawty, judge", setEqualsIgnoreCase(mentionedUsers, theseUsers));
     }
     
     // Covers one case-sensitive duplicate
@@ -188,7 +188,7 @@ public class ExtractTest {
         Set<String> theseUsers = new HashSet<String>();
         theseUsers.add("SHawTY");
         
-        assertTrue("expected mentions", setEqualsIgnoreCase(mentionedUsers, theseUsers));
+        assertTrue("expected mentions: shawty", setEqualsIgnoreCase(mentionedUsers, theseUsers));
     }
     
     // Covers fake mentions, one mention at start of string
@@ -199,7 +199,7 @@ public class ExtractTest {
         Set<String> theseUsers = new HashSet<String>();
         theseUsers.add("crammed");
         
-        assertTrue("expected mentions", setEqualsIgnoreCase(mentionedUsers, theseUsers));
+        assertTrue("expected mentions: crammed", setEqualsIgnoreCase(mentionedUsers, theseUsers));
     }
     
     // Covers unconventional usernames, invalid char following mention
@@ -211,6 +211,6 @@ public class ExtractTest {
         theseUsers.add("_ichabod");
         theseUsers.add("shaw-ty");
         
-        assertTrue("expected mentions", setEqualsIgnoreCase(mentionedUsers, theseUsers));
+        assertTrue("expected mentions: _ichabod, shaw-ty", setEqualsIgnoreCase(mentionedUsers, theseUsers));
     }
 }
