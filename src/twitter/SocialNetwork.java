@@ -3,6 +3,11 @@
  */
 package twitter;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -41,7 +46,24 @@ public class SocialNetwork {
      *         either authors or @-mentions in the list of tweets.
      */
     public static Map<String, Set<String>> guessFollowsGraph(List<Tweet> tweets) {
-        throw new RuntimeException("not implemented");
+        Map<String, Set<String>> follows = new HashMap<String, Set<String>>();
+        
+        for (Tweet tweet : tweets) {
+            String author = tweet.getAuthor();
+            Set<String> mentioned = Extract.getMentionedUsers(Arrays.asList(tweet));
+            
+            if (!mentioned.isEmpty()) {
+                if (follows.containsKey(author)) {
+                    Set<String> mentions = follows.get(author);
+                    mentions.addAll(mentioned);
+                }
+                else {
+                    follows.put(author, mentioned);
+                }
+            }
+        }
+        
+        return follows;
     }
 
     /**
@@ -54,7 +76,30 @@ public class SocialNetwork {
      *         descending order of follower count.
      */
     public static List<String> influencers(Map<String, Set<String>> followsGraph) {
-        throw new RuntimeException("not implemented");
+        List<String> influencers = new ArrayList<String>();
+        Map<String, Integer> mentionCount = new HashMap<String, Integer>();
+        
+        for (Set<String> valSet : followsGraph.values()) {
+            for (String mention : valSet) {
+                if (mentionCount.containsKey(mention)) {
+                    Integer numMtns = mentionCount.get(mention);
+                    mentionCount.put(mention, numMtns + 1);
+                }
+                else {
+                    mentionCount.put(mention, 1);
+                    influencers.add(mention);
+                }
+            }
+        }
+        
+        // Sorts in descending order based on mention count
+        Collections.sort(influencers, new Comparator<String>() {
+            public int compare(String first, String second) {
+                return mentionCount.get(second).compareTo(mentionCount.get(first));
+            }
+        });
+        
+        return influencers;
     }
 
 }
