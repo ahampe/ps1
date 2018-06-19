@@ -8,6 +8,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -47,6 +48,8 @@ public class SocialNetwork {
      */
     public static Map<String, Set<String>> guessFollowsGraph(List<Tweet> tweets) {
         Map<String, Set<String>> follows = new HashMap<String, Set<String>>();
+        // map hashtags to people who have used them in their tweets:
+        Map<String, Set<String>> tagUsers = new HashMap<String, Set<String>>();
         
         for (Tweet tweet : tweets) {
             String author = tweet.getAuthor();
@@ -54,11 +57,49 @@ public class SocialNetwork {
             
             if (!mentioned.isEmpty()) {
                 if (follows.containsKey(author)) {
-                    Set<String> mentions = follows.get(author);
-                    mentions.addAll(mentioned);
+                    Set<String> following = follows.get(author);
+                    following.addAll(mentioned);
                 }
                 else {
                     follows.put(author, mentioned);
+                }
+            }
+            
+            Set<String> hashtags = Extract.getHashtags(Arrays.asList(tweet));
+            if (!hashtags.isEmpty()) {
+                for (String hashtag : hashtags) {
+                    if (tagUsers.containsKey(hashtag)) {
+                        Set<String> users = tagUsers.get(hashtag);
+                        users.add(author);
+                    }
+                    else {
+                        tagUsers.put(hashtag, new HashSet<String>(Arrays.asList(author)));
+                    }
+                }
+            }
+        }
+        
+        // Users with common hashtags will mutually follow each other:
+        if (!tagUsers.isEmpty()) {
+            for (Set<String> users : tagUsers.values()) {
+                if (users.size() > 1) {
+                    for (String user : users) {
+                        Set<String> newFollows = new HashSet<String>();
+                        for (String other : users) {
+                            if (user.equals(other)) {
+                                continue;
+                            }
+                            newFollows.add(other);
+                        }
+                        
+                        if (follows.containsKey(user)) {
+                            Set<String> following = follows.get(user);
+                            following.addAll(newFollows);
+                        }
+                        else {
+                            follows.put(user, newFollows);
+                        }
+                    }
                 }
             }
         }

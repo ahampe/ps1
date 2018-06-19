@@ -74,9 +74,9 @@ public class SocialNetworkTest {
         Map<String, Set<String>> followsGraph = SocialNetwork.guessFollowsGraph(Arrays.asList(tweet3, tweet4));
         
         assertFalse("expected non-empty graph", followsGraph.isEmpty());
-        assertEquals("expected size", 2, followsGraph.size());
-        assertTrue("expected followers", followsGraph.get("conanthebarbarian").equals(new HashSet<String>(Arrays.asList("thulsadoom"))));
-        assertTrue("expected followers", followsGraph.get("davit").equals(new HashSet<String>(Arrays.asList("shawty"))));
+        assertTrue("expected size", followsGraph.size() >= 2);
+        assertTrue("expected followers", followsGraph.get("conanthebarbarian").containsAll(new HashSet<String>(Arrays.asList("thulsadoom"))));
+        assertTrue("expected followers", followsGraph.get("davit").containsAll(new HashSet<String>(Arrays.asList("shawty"))));
     }
     
     // Covers multiple mentions in one tweet, duplicate mentions
@@ -85,8 +85,8 @@ public class SocialNetworkTest {
         Map<String, Set<String>> followsGraph = SocialNetwork.guessFollowsGraph(Arrays.asList(tweet3, tweet4, tweet5));
         
         assertFalse("expected non-empty graph", followsGraph.isEmpty());
-        assertEquals("expected size", 3, followsGraph.size());
-        assertTrue("expected followers", followsGraph.get("eggbert").equals(new HashSet<String>(Arrays.asList("davit", "alyssa", "thulsadoom"))));
+        assertTrue("expected size", followsGraph.size() >= 3);
+        assertTrue("expected followers", followsGraph.get("eggbert").containsAll(new HashSet<String>(Arrays.asList("davit", "alyssa", "thulsadoom"))));
     }
     
     // --- Tests for influencers ---

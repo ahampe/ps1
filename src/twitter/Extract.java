@@ -83,5 +83,33 @@ public class Extract {
         
         return mentioned;
     }
+    
+    /**
+     * Get hashtags mentioned in a list of tweets.
+     * 
+     * @param tweets
+     *            list of tweets with distinct ids, not modified by this method.
+     * @return the set of hashtags that are found in the text of the tweets.
+     *         a hashtag is defined by a "#" followed by at least one letter character,
+     *         followed by zero or more alphanumeric characters. It is assumed that all 
+     *         of the characters in the hashtag are in the English alphabet or in the digits 0-9.
+     *         Hashtags are not case-sensitive, and the returned set will be may include
+     *         a hashtag at most once.
+     */
+    public static Set<String> getHashtags(List<Tweet> tweets) {
+        Set<String> hashtags = new HashSet<String>();
+        
+        Pattern hashtagPattern = Pattern.compile("(?:^|\\s)\\#([A-Za-z]\\w*)");
+        
+        for (Tweet tweet : tweets) {
+            String txt = tweet.getText();
+            Matcher m = hashtagPattern.matcher(txt);
+            while (m.find()) {
+                hashtags.add(m.group(1).toLowerCase());
+            }
+        }
+        
+        return hashtags;
+    }
 
 }
